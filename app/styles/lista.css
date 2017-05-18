@@ -1,0 +1,11 @@
+.table {
+    margin-top: 20px;
+}
+
+.form-control {
+    margin-bottom: 5px;
+}
+
+.selecionado {
+    background-color: yellow;
+}
