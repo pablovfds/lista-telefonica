@@ -10,10 +10,12 @@
 angular.module('listaTelefonicaApp')
     .controller('ListaCtrl', function() {
 
+        this.app = "Lista Telefonica";
+
         this.contatos = [
-            { nome: "Pedro", telefone: "99767888" },
-            { nome: "Ana", telefone: "99767888" },
-            { nome: "Maria", telefone: "99767888" }
+            { nome: "Pedro", telefone: "99767888", cor: "yellow", operadora: { nome: "Oi", codigo: 14, categoria: "Celular" }, data: new Date() },
+            { nome: "Ana", telefone: "99767888", cor: "blue", operadora: { nome: "Vivo", codigo: 15, categoria: "Celular" }, data: new Date() },
+            { nome: "Maria", telefone: "99767888", cor: "red", operadora: { nome: "Tim", codigo: 41, categoria: "Celular" }, data: new Date() }
         ];
 
         this.operadoras = [
@@ -27,6 +29,7 @@ angular.module('listaTelefonicaApp')
         this.adicionarContato = function(contato) {
             this.contatos.push(angular.copy(contato));
             delete this.contato;
+            this.contatoForm.$setPristine();
         };
 
         this.removerContatos = function(contatos) {

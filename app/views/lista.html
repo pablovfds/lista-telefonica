@@ -1,26 +1,53 @@
 <div class="jumbotron">
-    <h4 ng-bind="lista.app"></h4>
-    <table class="table">
+    <h3 ng-bind="lista.app"></h3>
+    <table ng-show="lista.contatos.length > 0" class="table">
         <tr class="text-center">
             <th></th>
             <th>Nome</th>
             <th>Telefone</th>
             <th>Operadora</th>
+            <th>Data</th>
+            <th></th>
         </tr>
         <tr ng-class="{selecionado : contato.selecionado}" ng-repeat="contato in lista.contatos">
             <td><input type="checkbox" name="seleciona" ng-model="contato.selecionado"></td>
             <td>{{contato.nome}}</td>
             <td>{{contato.telefone}}</td>
-            <td>{{contato.operadora.nome}}</td>
+            <td>{{contato.operadora.nome | uppercase}}</td>
+            <td>{{contato.data | date:'dd/MM/yyyy HH:mm'}}</td>
+            <td>
+                <div id="corContato" ng-style="{'background-color': contato.cor}"></div>
+            </td>
         </tr>
     </table>
     <hr/>
-    <input type="text" class="form-control" name="nome" placeholder="Nome" ng-model="contato.nome">
-    <input type="text" class="form-control" name="telefone" placeholder="Telefone" ng-model="contato.telefone">
-    <select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome for operadora in lista.operadoras">
-        <option value="">Selecione uma operadora</option>
-    </select>
-    <button class="btn btn-primary btn-block" ng-click="lista.adicionarContato(contato)" ng-disabled="!(contato.nome && contato.telefone)">Adicionar Contato</button>
-    <button class="btn btn-danger btn-block" ng-click="lista.removerContatos(lista.contatos)" ng-disabled="!lista.isContatoSelecionado(lista.contatos)">Remover Contato</button>
+    <form name="contatoForm">
+        <input type="text" class="form-control" name="nome" placeholder="Nome" ng-model="contato.nome" ng-required="true" ng-minlength="10">
+        <input type="text" class="form-control" name="telefone" placeholder="Telefone" ng-model="contato.telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/">
+        <select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome for operadora in lista.operadoras">
+            <option value="">Selecione uma operadora</option>
+        </select>
+        <button class="btn btn-primary btn-block" ng-click="lista.adicionarContato(contato)" ng-disabled="contatoForm.$invalid">Adicionar Contato</button>
+    </form>
+    <div>
+        <div ng-show="contatoForm.telefone.$dirty" ng-messages="contatoForm.telefone.$error">
+            <div ng-message="required" class="alert alert-danger">
+                Por favor, preencha o campo de telefone.
+            </div>
+            <div ng-message="pattern" class="alert alert-danger">
+                O campo de telefone deve ter o formato DDDDD-DDDD.
+            </div>
+        </div>
+
+        <div ng-show="contatoForm.nome.$dirty" ng-messages="contatoForm.nome.$error">
+            <div ng-message="required" class="alert alert-danger">
+                Por favor, preencha o campo de nome.
+            </div>
+            <div ng-message="minlength" class="alert alert-danger">
+                Por favor, preencha o campo de nome com pelo menos 10 caracteres.
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-danger btn-block" ng-click="lista.removerContatos(lista.contatos)" ng-if="lista.isContatoSelecionado(lista.contatos)">Remover Contato</button>
 
 </div>
