@@ -8,46 +8,83 @@
  * Controller of the listaTelefonicaApp
  */
 angular.module('listaTelefonicaApp')
-    .controller('ListaCtrl', function() {
+    .controller('ListaCtrl', function($scope, $http) {
 
-        this.app = "Lista Telefonica";
+        $scope.app = "Lista Telefonica";
 
-        this.contatos = [
-            { nome: "Pedro", telefone: "99767888", cor: "yellow", operadora: { nome: "Oi", codigo: 14, categoria: "Celular" }, data: new Date() },
-            { nome: "Ana", telefone: "99762888", cor: "blue", operadora: { nome: "Vivo", codigo: 15, categoria: "Celular" }, data: new Date() },
-            { nome: "Maria", telefone: "99717888", cor: "red", operadora: { nome: "Tim", codigo: 41, categoria: "Celular" }, data: new Date() }
-        ];
+        $scope.contatos = [];
 
-        this.operadoras = [
-            { nome: "Oi", codigo: 14, categoria: "Celular" },
-            { nome: "Vivo", codigo: 15, categoria: "Celular" },
-            { nome: "Tim", codigo: 41, categoria: "Celular" },
-            { nome: "GVT", codigo: 25, categoria: "Fixo" },
-            { nome: "Embratel", codigo: 21, categoria: "Fixo" }
-        ];
+        $scope.operadoras = [];
 
-        this.adicionarContato = function(contato) {
-            this.contatos.push(angular.copy(contato));
-            delete this.contato;
-            this.contatoForm.$setPristine();
+        var reqContatos = {
+            method: 'GET',
+            url: 'http://localhost:1337/contato',
+            headers: {
+                'Content-Type': "application/json"
+            }
         };
 
-        this.removerContatos = function(contatos) {
-            this.contatos = contatos.filter(function(contato) {
+        var carregaContatos = function() {
+            $http(reqContatos)
+                .then(function mySucces(response) {
+                    $scope.contatos = response.data;
+                }, function myError(error) {
+                    console.log("error" + error);
+                });
+        };
+
+        var reqOperadoras = {
+            method: 'GET',
+            url: 'http://localhost:1337/operadora',
+            headers: {
+                'Content-Type': "application/json"
+            }
+        };
+
+        var carregaOperadoras = function() {
+            $http(reqOperadoras)
+                .then(function mySucces(response) {
+                    $scope.operadoras = response.data;
+                }, function myError(error) {
+                    console.log("error" + error);
+                });
+        };
+
+        $scope.adicionarContato = function(contato) {
+            $scope.contatos.push(angular.copy(contato));
+            delete $scope.contato;
+            $scope.contatoForm.$setPristine();
+            angular.element('#novoContatoModal').modal('hide');
+        };
+
+        $scope.removerContatos = function(contatos) {
+            $scope.contatos = contatos.filter(function(contato) {
                 if (!contato.selecionado) return contato;
             });
         };
 
-        this.isContatoSelecionado = function(contatos) {
+        $scope.isContatoSelecionado = function(contatos) {
             return contatos.some(function(contato) {
                 return contato.selecionado;
             });
         };
 
-        this.ordenarPor = function(campo) {
-            this.criterioDeOrdenacao = campo;
-            this.direcaoDaOrdenacao = !this.direcaoDaOrdenacao;
-            console.log(this.criterioDeOrdenacao);
+        $scope.ordenarPor = function(campo) {
+            $scope.criterioDeOrdenacao = campo;
+            $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
         };
 
+        $scope.deletarContato = function(contato) {
+            contato.selecionado = true;
+            $scope.contatos = $scope.contatos.filter(function(contato) {
+                if (!contato.selecionado) return contato;
+            });
+        };
+
+        $scope.editarContato = function(contato) {
+            console.log(contato);
+        };
+
+        carregaContatos();
+        carregaOperadoras();
     });
