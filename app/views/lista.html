@@ -1,15 +1,16 @@
 <div class="jumbotron">
     <h3 ng-bind="lista.app"></h3>
+    <input class="form-control" type="text" name="busca" ng-model="criterioDeBusca" placeholder="O que você está buscando?">
     <table ng-show="lista.contatos.length > 0" class="table">
         <tr class="text-center">
             <th></th>
-            <th>Nome</th>
-            <th>Telefone</th>
+            <th><a href="" ng-click="lista.ordenarPor('nome')">Nome</a></th>
+            <th><a href="" ng-click="lista.ordenarPor('telefone')">Telefone</a></th>
             <th>Operadora</th>
             <th>Data</th>
             <th></th>
-        </tr>
-        <tr ng-class="{selecionado : contato.selecionado}" ng-repeat="contato in lista.contatos">
+        </tr>{{criterioDeOrdenacao}}
+        <tr ng-class="{selecionado : contato.selecionado}" ng-repeat="contato in lista.contatos | filter: criterioDeBusca | orderBy:lista.criterioDeOrdenacao:lista.direcaoDaOrdenacao">
             <td><input type="checkbox" name="seleciona" ng-model="contato.selecionado"></td>
             <td>{{contato.nome}}</td>
             <td>{{contato.telefone}}</td>
@@ -22,12 +23,12 @@
     </table>
     <hr/>
     <form name="contatoForm">
-        <input type="text" class="form-control" name="nome" placeholder="Nome" ng-model="contato.nome" ng-required="true" ng-minlength="10">
-        <input type="text" class="form-control" name="telefone" placeholder="Telefone" ng-model="contato.telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/">
-        <select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome for operadora in lista.operadoras">
+        <input type="text" class="form-control" name="nome" placeholder="Nome" ng-model="lista.contato.nome" ng-required="true" ng-minlength="10">
+        <input type="text" class="form-control" name="telefone" placeholder="Telefone" ng-model="lista.contato.telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/">
+        <select class="form-control" ng-model="lista.contato.operadora" ng-options="operadora.nome for operadora in lista.operadoras">
             <option value="">Selecione uma operadora</option>
         </select>
-        <button class="btn btn-primary btn-block" ng-click="lista.adicionarContato(contato)" ng-disabled="contatoForm.$invalid">Adicionar Contato</button>
+        <button class="btn btn-primary btn-block" ng-click="lista.adicionarContato(lista.contato)" ng-disabled="contatoForm.$invalid">Adicionar Contato</button>
     </form>
     <div>
         <div ng-show="contatoForm.telefone.$dirty" ng-messages="contatoForm.telefone.$error">
