@@ -8,7 +8,7 @@
  * Controller of the listaTelefonicaApp
  */
 angular.module('listaTelefonicaApp')
-    .controller('ListaCtrl', function($scope, $http) {
+    .controller('ListaCtrl', function($scope, $http, contatosAPIService, operadorasAPIService) {
 
         $scope.app = "Lista Telefonica";
 
@@ -16,16 +16,8 @@ angular.module('listaTelefonicaApp')
 
         $scope.operadoras = [];
 
-        var reqContatos = {
-            method: 'GET',
-            url: 'http://localhost:1337/contato',
-            headers: {
-                'Content-Type': "application/json"
-            }
-        };
-
         var carregaContatos = function() {
-            $http(reqContatos)
+            contatosAPIService.getContatos()
                 .then(function mySucces(response) {
                     $scope.contatos = response.data;
                 }, function myError(error) {
@@ -33,16 +25,8 @@ angular.module('listaTelefonicaApp')
                 });
         };
 
-        var reqOperadoras = {
-            method: 'GET',
-            url: 'http://localhost:1337/operadora',
-            headers: {
-                'Content-Type': "application/json"
-            }
-        };
-
         var carregaOperadoras = function() {
-            $http(reqOperadoras)
+            operadorasAPIService.getOperadoras()
                 .then(function mySucces(response) {
                     $scope.operadoras = response.data;
                 }, function myError(error) {
@@ -51,10 +35,26 @@ angular.module('listaTelefonicaApp')
         };
 
         $scope.adicionarContato = function(contato) {
-            $scope.contatos.push(angular.copy(contato));
-            delete $scope.contato;
-            $scope.contatoForm.$setPristine();
-            angular.element('#novoContatoModal').modal('hide');
+
+            var body = {
+                nome: contato.nome,
+                telefone: contato.telefone,
+                operadora: {
+                    nome: contato.operadora.nome,
+                    codigo: contato.operadora.codigo,
+                    categoria: contato.operadora.categoria
+                }
+            };
+
+            contatosAPIService.saveContato(body)
+                .then(function mySucces(response) {
+                    delete $scope.contato;
+                    $scope.contatoForm.$setPristine();
+                    carregaContatos();
+                    angular.element('#novoContatoModal').modal('hide');
+                }, function myError(error) {
+                    console.log("error " + error);
+                });
         };
 
         $scope.removerContatos = function(contatos) {
@@ -75,10 +75,12 @@ angular.module('listaTelefonicaApp')
         };
 
         $scope.deletarContato = function(contato) {
-            contato.selecionado = true;
-            $scope.contatos = $scope.contatos.filter(function(contato) {
-                if (!contato.selecionado) return contato;
-            });
+            contatosAPIService.deleteContato(contato.id)
+                .then(function mySucces(response) {
+                    carregaContatos();
+                }, function myError(error) {
+                    console.log("error " + error);
+                });
         };
 
         $scope.editarContato = function(contato) {

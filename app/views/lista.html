@@ -21,28 +21,26 @@
                 <h4>Data</h4>
             </th>
             <th></th>
-        </tr>{{criterioDeOrdenacao}}
+        </tr>
         <tr ng-class="{selecionado : contato.selecionado}" ng-repeat="contato in contatos | filter: criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
-            <td class="align-baseline">
-                <input type="checkbox" name="seleciona" ng-model="contato.selecionado">
+            <td class="align-middle">
+                <h5>#{{contato.id}}</h5>
             </td>
             <td class="align-baseline">
-                <h4>{{contato.nome}}</h4>
-            </td>
-            <td class="align-baseline modal">
-                <h4>{{contato.telefone}}</h4>
+                <h5>{{contato.nome}}</h5>
             </td>
             <td class="align-baseline">
-                <h4>{{contato.operadora.nome | uppercase}}</h4>
+                <h5>{{contato.telefone}}</h5>
             </td>
             <td class="align-baseline">
-                <h4>{{contato.createdAt | date:'dd/MM/yyyy HH:mm'}}</h4>
+                <h5>{{contato.operadora.nome | uppercase}}</h5>
             </td>
             <td class="align-baseline">
+                <h5>{{contato.createdAt | date:'dd/MM/yyyy HH:mm'}}</h5>
+            </td>
+            <td class="align-middle">
                 <div class="dropdown">
-                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                        <span class="glyphicon glyphicon-cog"></span>
-                    </button>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                     <ul class="dropdown-menu">
                         <li><a href="" ng-click="deletarContato(contato)">Deletar</a></li>
                         <li><a href="" ng-click="editarContato(contato)">Editar</a></li>
@@ -52,8 +50,7 @@
         </tr>
     </table>
     <hr/>
-
-    <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#novoContatoModal">adicionar Contato</button>
+    <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#novoContatoModal">Adicionar Contato</button>
     <button class="btn btn-danger btn-block" ng-click="removerContatos(contatos)" ng-if="isContatoSelecionado(contatos)">Remover Contato</button>
 </div>
 
