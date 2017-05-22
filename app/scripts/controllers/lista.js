@@ -11,6 +11,7 @@ angular.module('listaTelefonicaApp')
     .controller('ListaCtrl', function($scope, contatosAPIService, operadorasAPIService) {
 
         $scope.app = "Lista Telefonica";
+        $scope.error = "";
 
         $scope.contatos = [];
 
@@ -18,19 +19,19 @@ angular.module('listaTelefonicaApp')
 
         var carregaContatos = function() {
             contatosAPIService.getContatos()
-                .then(function mySucces(response) {
+                .then(function success(response) {
                     $scope.contatos = response.data;
-                }, function myError(error) {
-                    console.log("error" + error);
+                }, function error(error) {
+                    $scope.error = "Não foi possivel carregar a lista de contatos";
                 });
         };
 
         var carregaOperadoras = function() {
             operadorasAPIService.getOperadoras()
-                .then(function mySucces(response) {
+                .then(function success(response) {
                     $scope.operadoras = response.data;
-                }, function myError(error) {
-                    console.log("error" + error);
+                }, function error(error) {
+                    $scope.error = "Não foi possivel carregar a lista de operadoras";
                 });
         };
 

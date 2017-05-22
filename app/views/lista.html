@@ -1,5 +1,7 @@
 <div class="jumbotron">
     <h3 ng-bind="app"></h3>
+    <ui-alert title="Ops, aconteceu um problema" message="error"></ui-alert>
+
     <input class="form-control" type="text" name="busca" ng-model="criterioDeBusca" placeholder="O que você está buscando?">
     <table ng-show="contatos.length > 0" class="table">
         <tr class="text-center">
