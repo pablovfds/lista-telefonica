@@ -8,7 +8,7 @@
  * Controller of the listaTelefonicaApp
  */
 angular.module('listaTelefonicaApp')
-    .controller('ListaCtrl', function($scope, $http, contatosAPIService, operadorasAPIService) {
+    .controller('ListaCtrl', function($scope, contatosAPIService, operadorasAPIService) {
 
         $scope.app = "Lista Telefonica";
 
