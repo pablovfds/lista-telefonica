@@ -8,7 +8,7 @@
  * Controller of the listaTelefonicaApp
  */
 angular.module('listaTelefonicaApp')
-    .controller('ListaCtrl', function($scope, contatosAPIService, operadorasAPIService) {
+    .controller('ListaCtrl', function($scope, contatosAPIService, operadorasAPIService, toastr) {
 
         $scope.app = "Lista Telefonica";
         $scope.error = "";
@@ -21,8 +21,12 @@ angular.module('listaTelefonicaApp')
             contatosAPIService.getContatos()
                 .then(function success(response) {
                     $scope.contatos = response.data;
+                    toastr.success('Sucesso ao carregar contatos');
+                    toastr.info('Você possui ' + response.data.length + ' contatos');
                 }, function error(error) {
-                    $scope.error = "Não foi possivel carregar a lista de contatos";
+                    var message = "Não foi possivel carregar a lista de contatos";
+                    $scope.error = message;
+                    toastr.error(message);
                 });
         };
 
@@ -31,7 +35,9 @@ angular.module('listaTelefonicaApp')
                 .then(function success(response) {
                     $scope.operadoras = response.data;
                 }, function error(error) {
-                    $scope.error = "Não foi possivel carregar a lista de operadoras";
+                    var message = "Não foi possivel carregar a lista de operadoras";
+                    $scope.error = message;
+                    toastr.error(message);
                 });
         };
 
@@ -53,8 +59,10 @@ angular.module('listaTelefonicaApp')
                     $scope.contatoForm.$setPristine();
                     carregaContatos();
                     angular.element('#novoContatoModal').modal('hide');
+                    toastr.success('Contato adicionado com sucesso');
+
                 }, function myError(error) {
-                    console.log("error " + error);
+                    toastr.error('Erro ao adicionar o contato');
                 });
         };
 
@@ -77,15 +85,19 @@ angular.module('listaTelefonicaApp')
 
         $scope.deletarContato = function(contato) {
             contatosAPIService.deleteContato(contato.id)
-                .then(function mySucces(response) {
+                .then(function success(response) {
+                    toastr.clear();
+
                     carregaContatos();
-                }, function myError(error) {
+                    toastr.success("Contato excluido com sucesso");
+                }, function error(error) {
                     console.log("error " + error);
+                    toastr.error("Erro ao excluir contato");
                 });
         };
 
         $scope.editarContato = function(contato) {
-            console.log(contato);
+            $scope.edtContato = contato;
         };
 
         carregaContatos();

@@ -1,6 +1,8 @@
 <div class="jumbotron">
     <h3 ng-bind="app"></h3>
-    <ui-alert title="Ops, aconteceu um problema" message="error"></ui-alert>
+    <div ng-show="error.length > 0">
+        <ui-alert title="Ops, aconteceu um problema" message="error"></ui-alert>
+    </div>
 
     <input class="form-control" type="text" name="busca" ng-model="criterioDeBusca" placeholder="O que você está buscando?">
     <table ng-show="contatos.length > 0" class="table">
@@ -45,7 +47,8 @@
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                     <ul class="dropdown-menu">
                         <li><a href="" ng-click="deletarContato(contato)">Deletar</a></li>
-                        <li><a href="" ng-click="editarContato(contato)">Editar</a></li>
+                        <!--<li><a href="" ng-click="editarContato(contato)">Editar</a></li>-->
+                        <li><a href="" data-toggle="modal" data-target="#editarContatoModal" ng-click="editarContato(contato)">Editar</a></li>
                     </ul>
                 </div>
             </td>
@@ -73,6 +76,59 @@
                     <div class="form-group">
                         <label for="inputTelefone" class="form-control-label">Telefone:</label>
                         <input type="text" class="form-control" name="telefone" id="inputTelefone" placeholder="Telefone" ng-model="contato.telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/">
+                    </div>
+                    <div class="form-group text-left">
+                        <label for="inputOperadora">Operadora</label>
+                        <select class="form-control" id="inputOperadora" ng-model="contato.operadora" ng-options="operadora.nome for operadora in operadoras">
+                            <option value="">Selecione uma operadora</option>
+                        </select>
+                    </div>
+                </form>
+                <div>
+                    <div ng-show="contatoForm.telefone.$dirty" ng-messages="contatoForm.telefone.$error">
+                        <div ng-message="required" class="alert alert-danger">
+                            Por favor, preencha o campo de telefone.
+                        </div>
+                        <div ng-message="pattern" class="alert alert-danger">
+                            O campo de telefone deve ter o formato DDDDD-DDDD.
+                        </div>
+                    </div>
+
+                    <div ng-show="contatoForm.nome.$dirty" ng-messages="contatoForm.nome.$error">
+                        <div ng-message="required" class="alert alert-danger">
+                            Por favor, preencha o campo de nome.
+                        </div>
+                        <div ng-message="minlength" class="alert alert-danger">
+                            Por favor, preencha o campo de nome com pelo menos 10 caracteres.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" ng-click="adicionarContato(contato)" ng-disabled="contatoForm.$invalid">Adicionar Contato</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarContatoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Editar contato</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        </button>
+            </div>
+            <div class="modal-body">
+                <form name="contatoForm">
+                    <div class="form-group">
+                        <label for="inputNome" class="form-control-label">Nome:</label>
+                        <input type="text" class="form-control" name="nome" id="inputNome" ng-value="edtContato.nome" placeholder="Nome" ng-model="contato.nome" ng-required="true" ng-minlength="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputTelefone" class="form-control-label">Telefone:</label>
+                        <input type="text" class="form-control" name="telefone" id="inputTelefone" ng-value="edtContato.telefone" placeholder="Telefone" ng-model="contato.telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/">
                     </div>
                     <div class="form-group text-left">
                         <label for="inputOperadora">Operadora</label>
