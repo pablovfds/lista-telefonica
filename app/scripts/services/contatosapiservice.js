@@ -8,19 +8,19 @@
  * Factory in the listaTelefonicaApp.
  */
 angular.module('listaTelefonicaApp')
-    .factory('contatosAPIService', function($http) {
+    .factory('contatosAPIService', function($http, configValue) {
         // Service logic
         // ...
         var _getContatos = function() {
-            return $http.get("http://localhost:1337/contato");
+            return $http.get(configValue.baseUrl + "/contato");
         };
 
         var _saveContato = function(contato) {
-            return $http.post("http://localhost:1337/contato", contato);
+            return $http.post(configValue.baseUrl + "/contato", contato);
         };
 
         var _deleteContato = function(id) {
-            return $http.delete('http://localhost:1337/contato/' + id);
+            return $http.delete(configValue.baseUrl + '/contato/' + id);
         }
 
         // Public API here
