@@ -46,6 +46,7 @@ angular.module('listaTelefonicaApp')
             var body = {
                 nome: contato.nome,
                 telefone: contato.telefone,
+                data: contato.data,
                 operadora: {
                     nome: contato.operadora.nome,
                     codigo: contato.operadora.codigo,
